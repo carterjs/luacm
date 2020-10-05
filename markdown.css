@@ -1,0 +1,135 @@
+/****************************
+Defining cool markdown styles
+****************************/
+
+/* Container styles */
+.markdown {
+	padding: 1rem 2rem;
+}
+/* heading sizes/styles */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+	font-size: 1rem;
+	font-weight: bold;
+	margin: 1rem 0 0;
+}
+
+/* # before headings */
+.markdown h1:before,
+.markdown h2:before,
+.markdown h3:before,
+.markdown h4:before,
+.markdown h5:before,
+.markdown h6:before {
+	color: #f44;
+	font-weight: normal;
+}
+.markdown h1::before {
+	content: "# ";
+}
+.markdown h2::before {
+	content: "## ";
+}
+.markdown h3::before {
+	content: "### ";
+}
+.markdown h4::before {
+	content: "#### ";
+}
+.markdown h5::before {
+	content: "##### ";
+}
+.markdown h6::before {
+	content: "###### ";
+}
+
+/* Spaced out paragraph */
+.markdown p {
+	margin: 1rem 0;
+	max-width: 960px;
+}
+
+/* Dash styled unordered lists */
+.markdown ul {
+	padding: 0;
+	margin: 1rem 0 1rem 1rem;
+	list-style: none;
+}
+.markdown ul li:before {
+	color: #888;
+	content: " - ";
+	padding: 0;
+}
+
+/* Typed style for ordered lists */
+.markdown ol {
+	counter-reset: item;
+	padding: 0;
+	margin: 1rem 0 1rem 1rem;
+	list-style: none;
+}
+.markdown ol li::before {
+	color: #888;
+	content: counter(item) ". ";
+	counter-increment: item;
+}
+
+/* Dash styled rule */
+.markdown hr {
+	border: none;
+	margin: 0;
+}
+.markdown hr::after {
+	content: "-----";
+	color: #888;
+}
+
+/* Fancy dash table */
+.markdown table {
+	margin: 0;
+	border-spacing: 0 4px;
+	border-collapse: separate;
+}
+
+.markdown td,
+.markdown th {
+	line-height: 1;
+	margin: 0;
+	text-align: left;
+	overflow: hidden;
+}
+
+.markdown th::after,
+.markdown thead td::after {
+	content: "-----";
+	font-weight: normal;
+	display: block;
+	text-align: center;
+	margin: 8px 0 0 0.5ch;
+	padding: 0 0 0 0.5ch;
+	border-left: 2px solid #888;
+	color: #888;
+	line-height: 1;
+}
+
+.markdown td::before,
+.markdown th::before {
+	line-height: 1;
+	content: " ";
+	border-left: 2px solid #888;
+	margin: 0 0.5ch;
+}
+
+.markdown td:first-child::before,
+.markdown th:first-child::before {
+	border-left: none;
+}
+
+.markdown th:first-child::after,
+.markdown thead td:first-child::after {
+	border-left: none;
+}

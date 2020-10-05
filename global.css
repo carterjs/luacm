@@ -1,0 +1,13 @@
+html,
+body {
+	margin: 0;
+	font-size: 11pt;
+	font-family: monospace;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+editor-root {
+	flex: auto;
+}
