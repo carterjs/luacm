@@ -4,8 +4,6 @@ import "./Tab.js";
 
 /** The root element for the editor layout */
 class Editor extends HTMLElement {
-	/** Currently selected file id */
-	selectedFile;
 
 	constructor() {
 		super();
@@ -15,10 +13,10 @@ class Editor extends HTMLElement {
 		this.shadowRoot.innerHTML = `
 			<style>
 				:host {
-					--main-bg: #101319;
-					--darker-bg: rgba(0,0,0,0.3);
+					--main-bg: #101320;
+					--darker-bg: rgba(0,0,0,0.5);
 					--darkest-bg: rgba(0,0,0,0.3);
-					--lighter-bg: rgba(255,255,255,0.1);
+					--lighter-bg: rgba(255,255,255,0.05);
 					display: flex;
 					flex-direction: column;
 					min-height: 100vh;
@@ -54,7 +52,7 @@ class Editor extends HTMLElement {
 				#filesContainer small {
 					font-weight: bold;
 					display: block;
-					padding: 0.5rem;
+					padding: 1rem;
 					font-size: 1rem;
 				}
 
@@ -71,7 +69,7 @@ class Editor extends HTMLElement {
 
 				#tabs {
 					display: none;
-					background: var(--darker-bg, #000);
+					background: var(--darker-bg);
 				}
 				@media screen and (min-width: 960px) {
 					:host {
@@ -95,7 +93,7 @@ class Editor extends HTMLElement {
 			</nav>
 			<main>
 				<div id="tabs"></div>
-                <slot></slot>
+				<slot></slot>
             </main>
             <footer>
                 <small>&copy; ${new Date().getFullYear()} ${this.title}</small>
@@ -103,7 +101,7 @@ class Editor extends HTMLElement {
         `;
 
 		window.addEventListener("hashchange", () => {
-			this.selectFile(window.location.hash);
+			this.selectFile(window.location.hash.slice(1));
 		});
 
 		this.files = this.shadowRoot.getElementById("files");
@@ -111,7 +109,7 @@ class Editor extends HTMLElement {
 
 		this.getFiles();
 
-		this.selectFile(window.location.hash);
+		this.selectFile(window.location.hash.slice(1));
 	}
 
 	/** Read files from DOM, render file list */
@@ -127,6 +125,8 @@ class Editor extends HTMLElement {
 			file.setAttribute("href", "#" + child.id);
 			file.innerText = child.id;
 
+			// this.openTab(child.id);
+
 			this.files.appendChild(file);
 		});
 	}
@@ -137,52 +137,57 @@ class Editor extends HTMLElement {
 	 * @param {string} id the id of the file to select
 	 */
 	selectFile(id) {
-		// Hide current file
-		if (this.selectedFile) {
-			const oldFile = this.querySelector(this.selectedFile);
-
-			if (oldFile) {
-				oldFile.style.display = "none";
-			}
-
-			const oldTab = this.shadowRoot.querySelector(
-				`editor-tab[href="${this.selectedFile}"]`
-			);
-		}
-
 		// No id given, default to the last tab
 		if (!id) {
-			const nextTab = this.shadowRoot.querySelector("editor-tab:last-child");
-			if (nextTab) {
-				window.location.hash = nextTab.href;
+			if (this.lastSelectedFile) {
+				this.selectTab(this.lastSelectedFile, false);
+			} else {
+				const nextTab = this.shadowRoot.querySelector("editor-tab:last-child");
+				if (nextTab) {
+					window.location.hash = nextTab.href;
+				} else {
+					console.log("(No tabs selected)");
+				}
 			}
 			return;
-		}
-
-		this.lastFile = this.selectedFile;
-
-		// Show new current file
-		this.selectedFile = id;
-
-		// Show new tab
-		const newFile = this.querySelector(this.selectedFile);
-		if (newFile) {
-			newFile.style.display = "block";
 		} else {
-			return;
+			this.lastSelectedFile = this.selectedFile;
+			this.selectedFile = undefined;
 		}
 
+		// Set the last selected file
+
+		this.selectTab(id);
+	}
+
+	openTab(id) {
 		// Display tabs properly
-		const tab = this.shadowRoot.querySelector(`editor-tab[href="${id}"]`);
-		if (tab) {
-			tab.setAttribute("active", true);
-		} else {
-			const tab = document.createElement("editor-tab");
-			tab.setAttribute("href", id);
-			tab.innerText = id.slice(1);
+		let tab = this.shadowRoot.querySelector(`editor-tab[href="#${id}"]`);
+		if (!tab) {
+			// Tab is closed, but we want to open it
+			tab = document.createElement("editor-tab");
+			tab.setAttribute("href", "#" + id);
+			tab.innerText = id;
 
 			this.tabs.appendChild(tab);
 		}
+
+		return tab;
+	}
+
+	selectTab(id, autoOpen = true) {
+		// Display tabs properly
+		let tab = this.shadowRoot.querySelector(`editor-tab[href="#${id}"]`);
+		if (tab) {
+			// Tab is open, set it active
+			window.location.hash = tab.href;
+			// tab.setAttribute("active", true);
+		} else if (autoOpen) {
+			tab = this.openTab(id);
+			window.location.hash = tab.href;
+		}
+
+		return tab;
 	}
 }
 

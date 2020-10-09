@@ -10,6 +10,9 @@ class FileLink extends HashDependant {
                 :host {
 					display: block;
 				}
+				:host(:hover) {
+					background: var(--lighter-bg);
+				}
 				a::before {
 					content: "md";
 					color: #800;
@@ -17,20 +20,16 @@ class FileLink extends HashDependant {
 					font-size: 0.8rem;
 				}
 				a {
+					padding: 0.5rem;
 					color: #eee;
 					text-decoration: none;
 					display: block;
-					line-height: 2;
 					text-indent: 0.5rem;
 				}
 				:host([active="true"]) a {
 					background: var(--main-bg, #000);
                 }
-                :host([active="true"]) a::after {
-					content: " ";
-					text-indent: 0;
-					float: right;
-					white-space: pre;
+                :host([active="true"]) a {
 					border-right: 2px solid #ff0;
                 }
             </style>

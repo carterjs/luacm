@@ -10,6 +10,10 @@ class Tab extends HashDependant {
 				:host {
 					display: inline-block;
 					border-right: 1px solid var(--main-bg, #111);
+					transition: all 100ms ease-in-out;
+				}
+				:host(:hover) {
+					background: var(--lighter-bg);
 				}
 				div {
 					display: flex;
@@ -17,12 +21,13 @@ class Tab extends HashDependant {
 				}
 				a, button {
 					font-size: 1rem;
+					outline: none;
 				}
 				a {
 					color: #eee;
 					text-decoration: none;
 					display: block;
-					padding: 1rem;
+					padding: 1rem 0.5rem 1rem 1rem;
 				}
 				a::after {
 					content: ".md";
@@ -31,15 +36,17 @@ class Tab extends HashDependant {
 				}
 				button {
 					background: transparent;
-					color: #eee;
+					color: #ddd;
 					border: none;
 					padding: 0.25rem 0.5rem;
 					margin-right: 0.5rem;
 					cursor: pointer;
+					font-size:  1.5rem;
+					font-weight: light;
 				}
-				button:hover {
-					background: rgba(255,255,255,0.1);
-				}
+				/* button:hover {
+					background: var(--lighter-bg);
+				} */
 				:host([active="true"]) {
 					background: var(--main-bg, #000);
 				}
@@ -57,8 +64,10 @@ class Tab extends HashDependant {
 			const parent = this.parentElement;
 			parent.removeChild(this);
 
-			// Close the tab
-			window.location.hash = "#";
+			if (this.getAttribute("active") === "true") {
+				// Close the tab
+				window.location.hash = "#";
+			}
 		});
 	}
 
